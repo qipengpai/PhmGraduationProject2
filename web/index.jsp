@@ -5,10 +5,6 @@
 	function dasd () {
 
     }
- </SCRIPT>
-    window.location="http://localhost:8090/web/login1.html";
-
-
 
     function sds() {
 
