@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改二手房信息</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!-- <link rel="stylesheet" href="css/banneraddbtn.css"> -->
+    <link rel="stylesheet" href="css/banneraddbtn.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+</head>
+<body>
+
+
+<div  role="form" id = "formid" style = "width:400px;height:850px;border:2px solid #D4D4D4;padding:30px 50px;box-shadow:3px 3px 5px #D4D4D4;">
+
+    <input type = "text" id = "nameid" style = "position:absolute;display:none;">
+    <h3 class = "text-center" id = "hid">修改二手房信息</h3>
+
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">房东姓名：</label><br>
+            <input id="name" type="text" class="form-control customerName" placeholder="房东姓名">
+            <ul id = "ulid" class="list-group"></ul>
+        </div>
+    </div>
+    <!-- 公告标题名称-->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">性别：</label><br>
+            <select id="selectv" style = "width:296px ;height:35px">
+                <option value="1">男</option>
+                <option value="2">女</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 公告内容 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">年龄：</label>
+            <input id="age" type="text" class="form-control" placeholder="年龄">
+        </div>
+    </div>
+    <!-- 公告内容 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">身份证号：</label>
+            <input id="idCard" type="text" class="form-control" placeholder="身份证号">
+        </div>
+    </div>
+    <!-- 输入状态选择 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">联系方式：</label>
+            <input id="phone" type="text" class="form-control" placeholder="联系方式">
+        </div>
+    </div>
+
+    <!--&lt;!&ndash; 公告外连接&ndash;&gt;-->
+    <!--<div class="form-group">-->
+    <!--<label for="picintr">公告外链</label>-->
+    <!--<input type="text" class="form-control" id="publichttpurl" placeholder="公告外链">-->
+    <!--</div>-->
+
+    <a href = "landlord.html" class="btn btn-primary">返回</a>
+    <button type="submit" class="btn btn-success pull-right" id = "submitbtn">提交</button>
+</div>
+
+<!-- 模态框提示 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="title">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body" id = "content">在这里添加一些文本</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    $(function(){
+        loginajax();
+    })
+    function loginajax(){
+        $.ajax({
+            type : "post",
+            url : "./../phm/get/allLandlordById.do?id=" +GetQueryString("id"),
+            success : function(data) {
+
+                $('#name').val( data.obj.name );
+
+                $('#selectv').val( data.obj.sex );
+
+                $('#age').val(data.obj.age);
+
+                $('#idCard').val( data.obj.idCard );
+
+                $('#phone').val(data.obj.phone);
+
+                /*存入id*/
+                $('#nameid').val( GetQueryString("id")   )
+
+            }
+        })
+    }
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null)
+            return decodeURI(r[2]);
+        return null;
+    }
+
+
+    /* 点击提交修改后的参数 */
+    $('#submitbtn').click(function(){
+        $.ajax({
+            type : "post",
+            data:{
+                "id"     : GetQueryString("id"), //修改的ID
+                "name":   $("#name").val(),   //title
+                "sex": $("#selectv").val(), //内容
+                "age":   $("#age").val(),
+                "idCard":   $("#idCard").val(),
+                "phone": $("#phone").val(),
+
+            },
+            url : "./../phm/update/LandlordInfo.do",
+            success : function(data){
+                /* 修改成功提示修改成功 */
+                $('#myModal').modal('show');
+                $('#title').html('系统提示');
+                $('#content').html('修改成功');
+            }
+        })
+    })
+
+
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>新房详情</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+    <style>
+        #tablecon{
+            padding:10px 0 0 ;
+            margin-top:50px;
+        }
+        #tablecon>h3{
+            text-align:center;
+        }
+        #tablecon>table{
+            width:100%;
+            margin-bottom:40px;
+        }
+        #tablecon>table>caption{
+            margin-left:15px;
+        }
+        #tablecon td{
+            word-wrap: break-word;
+            word-break: break-all;
+            text-align: left;
+            font-size:12px;
+            vertical-align: text-top;
+        }
+        .feature{
+            width: 8%;
+            padding:14px 14px 0;
+            color:#999;
+        }
+        .value{
+            width: 15%;
+            padding:10px 10px 0;
+        }
+        #returnbtn{
+            margin-left:15px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="tablecon">
+    <button class="btn btn-primary" id="returnbtn">返回</button>
+    <h3>新房详情</h3>
+    <input type="hidden" id="savestate">
+    <input type="hidden" id="savetext">
+    <input type="hidden" id="wayid">
+    <input type="hidden" id="waystate">
+    <input type="hidden" id="savepage">
+    <table class="table table-bordered">
+        <caption>新房信息</caption>
+        <tr>
+            <td class="feature">新房名称：</td>
+            <td class="value" id="newHouseName">空</td>
+            <td class="feature" >新房地址：</td>
+            <td class="value" id="newHouseAddress">空</td>
+            <td class="feature" >新房介绍：</td>
+            <td class="value" id="newHouseJie">空</td>
+        </tr>
+        <tr>
+            <td class="feature">新房价格：</td>
+            <td class="value" id="newHouseMoney">空</td>
+            <td class="feature">新房户型：</td>
+            <td class="value" id="newHouseType">空</td>
+            <td class="feature">楼层：</td>
+            <td class="value" id="newHouseFloor">空</td>
+        </tr>
+        <tr>
+            <td class="feature">建筑年代：</td>
+            <td class="value" id="newHouseYear">空</td>
+            <td class="feature">图片信息：</td>
+            <td class="value" id="newHouseImg">空</td>
+
+        </tr>
+
+    </table><!--
+  		<a href = "mallorder.html" class="btn btn-primary" id="returnbtn">返回</a> -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+                </div>
+                <div class="modal-body" id = "textcontent">
+                    <div class="form-group">
+                        <label for="waybill">快递单号：</label>
+                        <input type="text" class="form-control" id="waybill" placeholder="输入快递单号">
+                    </div>
+                </div>
+                <div class="modal-footer" id = "modalbtn">
+                    <button type="button" class="btn btn-default" onclick="waysubmit()">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    $(function(){
+        loadajax();
+        $("#returnbtn").click(function(){
+            returnlist();
+        })
+    })
+    /*加载当前数据*/
+    function loadajax(){
+        $("#savestate").val(GetQueryString("state"));
+        $("#savetext").val(GetQueryString("contident"));
+        $.ajax({
+            type : "post",
+            url : "./../phm/get/NewHouseById.do",
+            data : {
+                "id" : GetQueryString("id")
+            },
+            success : function(data){
+                $("#updatebtn").empty();
+                $("#savepage").val(GetQueryString("nowpage"));
+                if(data.error == 200){
+                    $("#newHouseName").html(data.obj.newHouseName);
+                    $("#newHouseAddress").html(data.obj.newHouseAddress);
+                    $("#newHouseJie").html(data.obj.newHouseJie);
+                    $("#newHouseMoney").html(data.obj.newHouseMoney);
+                    $("#newHouseType").html(data.obj.newHouseType);
+                    $("#newHouseFloor").html(data.obj.newHouseFloor);
+                    $("#newHouseImg").html(data.obj.newHouseImg);
+                    $("#newHouseYear").html(data.obj.newHouseYear);
+                }
+            }
+        })
+    }
+
+    /*正则获得url传递的参数值*/
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null)
+            return decodeURI(r[2]);
+        return null;
+    }
+    /*修改快递单号*/
+    function updateway(id,state){
+        $('#myModal').modal('show');
+        $('#myModalLabel').html('系统提示');
+        $('#wayid').val(id);
+        $('#waystate').val(state);
+    }
+    /*提交快递单号*/
+    function waysubmit(){
+        if($("#waybill").val() == ''){
+            $('#myModal').modal('show');
+            $('#myModalLabel').html('系统提示');
+            $('#textcontent').html('快递单号不能为空');
+            $('#modalbtn').html('<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>');
+        }else{
+            $.ajax({
+                type : "post",
+                data : {
+                    "id" : $('#wayid').val(),
+                    "waybillNumber" : $("#waybill").val(),
+                    "orderState" : $('#waystate').val()
+                },
+                url : "./../xlcr/admin/update/mallOrderState.do",
+                success : function(data){
+                    if(data.error == 200){
+                        $('#myModal').modal('show');
+                        $('#myModalLabel').html('系统提示');
+                        $("#modalbtn").html('<button type="button" class="btn btn-default" data-dismiss="modal" onclick="reloadtd('+data.obj+')">关闭</button>');
+                        $('#textcontent').html(data.msg);
+                    }else{
+                        $('#myModal').modal('show');
+                        $('#myModalLabel').html('系统提示');
+                        $("#modalbtn").html('<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>');
+                        $('#textcontent').html(data.msg);
+                    }
+                }
+            })
+        }
+    }
+    /*更新订单号*/
+    function reloadtd(obj){
+        $("#orderwaybill").html(obj);
+        fresh();
+//	location.reload();
+
+    }
+    /*刷新订单按钮*/
+    function fresh(){
+        var id = $('#wayid').val();
+        var state = $('#waystate').val();
+        var freshbtn = '<button type="button" class="btn btn-default" onclick="waysubmit()">提交</button>'+
+            '<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>';
+        var freshcontent = '<div class="form-group">'+
+            '<label for="waybill">快递单号：</label>'+
+            '<input type="text" class="form-control" id="waybill" placeholder="输入快递单号">'+
+            '</div>';
+        $('#myModal').modal('hide');
+        var htmlc = "<button  class='btn btn-danger btn-xs' style='position:absolute;right:5px'; onclick='updateway(&quot;"+id+"&quot;,&quot;"+state+"&quot;)'>修改</button>";
+        $("#orderwaybill").append(htmlc);
+        $("#textcontent").html(freshcontent);
+        $("#modalbtn").html(freshbtn);
+    }
+    /*按状态返回*/
+    function returnlist(){
+        var state = $("#savestate").val();
+        var context = $("#savetext").val();
+        window.location.href = "mallorder.html?state="+state+"&contident="+context+"&nowpage="+$("#savepage").val();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改二手房信息</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!-- <link rel="stylesheet" href="css/banneraddbtn.css"> -->
+    <link rel="stylesheet" href="css/banneraddbtn.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+</head>
+<body>
+
+
+<div  role="form" id = "formid" style = "width:400px;height:900px;border:2px solid #D4D4D4;padding:30px 50px;box-shadow:3px 3px 5px #D4D4D4;">
+
+    <input type = "text" id = "nameid" style = "position:absolute;display:none;">
+    <h3 class = "text-center" id = "hid">修改二手房信息</h3>
+
+
+    <!-- 二手房名称-->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">二手房名称：</label><br>
+            <input id="oldHouseName" type="text" class="form-control customerName" placeholder="二手房名称">
+        </div>
+    </div>
+    <!-- 二手房介紹-->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">二手房介紹：</label><br>
+            <input id="oldHouseJie" type="text" class="form-control customerName" placeholder="二手房介紹">
+        </div>
+    </div>
+    <!-- 楼盘 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">楼盘：</label>
+            <input id="oldHouseAddress" type="text" class="form-control" placeholder="楼盘">
+        </div>
+    </div>
+    <!-- 价格 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">价格：</label>
+            <input id="oldHouseMoney" type="text" class="form-control" placeholder="价格">
+        </div>
+    </div>
+
+    <!-- 公告标题名称-->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">楼层：</label><br>
+            <input id="oldHouseFloor" type="text" class="form-control customerName" placeholder="楼层">
+        </div>
+    </div>
+    <!-- 公告内容 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">面积：</label>
+            <input id="area" type="text" class="form-control" placeholder="面积">
+        </div>
+    </div>
+    <!-- 公告内容 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">户型：</label>
+            <input id="oldHouseType" type="text" class="form-control" placeholder="户型">
+        </div>
+    </div>
+    <!-- 输入状态选择 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">建筑年代：</label>
+            <!--<input id="oldHouseYear" type="text" class="form-control" placeholder="建筑年代">-->
+            <input class="form-control" id="oldHouseYear"  placeholder="建筑年代">
+        </div>
+    </div>
+    <!-- 公告内容 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">图片详情：</label>
+            <input id="oldHouse" type="text" class="form-control" placeholder="图片详情">
+        </div>
+    </div>
+    <!-- 输入状态选择 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">装修状态：</label>
+            <select id="selectv" style = "width:296px ;height:35px">
+                <option value="0">未装修</option>
+                <option value="1">简装修</option>
+                <option value="2">精装修</option>
+            </select>
+        </div>
+    </div>
+    <!--&lt;!&ndash; 公告外连接&ndash;&gt;-->
+    <!--<div class="form-group">-->
+        <!--<label for="picintr">公告外链</label>-->
+        <!--<input type="text" class="form-control" id="publichttpurl" placeholder="公告外链">-->
+    <!--</div>-->
+
+    <a href = "secondHandHouse.html" class="btn btn-primary">返回</a>
+    <button type="submit" class="btn btn-success pull-right" id = "submitbtn">提交</button>
+</div>
+
+<!-- 模态框提示 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="title">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body" id = "content">在这里添加一些文本</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    $(function(){
+        loginajax();
+    })
+    function loginajax(){
+        $.ajax({
+            type : "post",
+            url : "./../phm/get/secondHandHouseByid.do?id=" +GetQueryString("id"),
+            success : function(data) {
+
+                $('#oldHouseName').val( data.obj.oldHouseName );
+
+                $('#oldHouseAddress').val( data.obj.oldHouseAddress );
+
+                $('#oldHouseJie').val( data.obj.oldHouseJie );
+
+                $('#oldHouseMoney').val(data.obj.oldHouseMoney);
+
+                $('#area').val(data.obj.area);
+
+                $('#oldHouseType').val( data.obj.oldHouseType );
+
+                $('#oldHouseFloor').val( data.obj.oldHouseFloor );
+
+                $('#oldHouseYear').val(data.obj.oldHouseYear);
+
+                $('#selectv').val(data.obj.zxstate);
+
+                $('#oldHouse').val(data.obj.oldHouse);
+
+                /*存入id*/
+                $('#nameid').val( GetQueryString("id")   )
+
+            }
+        })
+    }
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null)
+            return decodeURI(r[2]);
+        return null;
+    }
+
+
+    /* 点击提交修改后的参数 */
+    $('#submitbtn').click(function(){
+        $.ajax({
+            type : "post",
+            data:{
+                "id"     : GetQueryString("id"), //修改的ID
+                "oldHouseName":   $("#oldHouseName").val(),   //title
+                "oldHouseAddress": $("#oldHouseAddress").val(), //内容
+                "oldHouseMoney":   $("#oldHouseMoney").val(),
+                "oldHouseJie":   $("#oldHouseJie").val(),
+                "area": $("#area").val(),
+                "oldHouseType":   $("#oldHouseType").val(),   //title
+                "oldHouseFloor": $("#oldHouseFloor").val(), //内容
+                "oldHouseYear":   $("#oldHouseYear").val(),
+                "zxstate": $("#selectv").val(),
+                "oldHouse": $("#oldHouse").val()
+            },
+            url : "./../phm/UPDATE/secondHandHouse.do",
+            success : function(data){
+                /* 修改成功提示修改成功 */
+                $('#myModal').modal('show');
+                $('#title').html('系统提示');
+                $('#content').html('修改成功');
+            }
+        })
+    })
+
+
+
+
+
+
+
+
+
+</script>

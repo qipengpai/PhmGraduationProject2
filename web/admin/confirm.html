@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html style="height:100%;">
+<head>
+<title>confirm.html</title>
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document</title>
+<link rel="icon" href="http://ox143yv1l.bkt.clouddn.com/ico.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="http://ox143yv1l.bkt.clouddn.com/ico.ico" type="image/x-icon" />
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/confirm.css">
+</head>
+<body style="height:100%;">
+
+	<div class="filter"></div>
+
+	<div class="form-horizontal" id="login">
+		<div class="form-group">
+			<label for="inputusername3" class="col-sm-2 control-label">用户名</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="inputusername3"
+					maxlength="8" placeholder="用户名2到8位">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+			<div class="col-sm-10">
+				<input type="password" class="form-control" id="inputPassword3"
+					maxlength="16" placeholder="密码8到16位">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">验证</label>
+			<div class="col-sm-10">
+				<div class="row">
+					<div class="col-sm-9">
+						<input type="text" class="form-control" id="vcode3"
+							placeholder="验证">
+					</div>
+					<div class="col-sm-3">
+						<img src="../phm/admin/ValidateCodeServlet.do" id="vcodeimg"
+							alt="" style="width:80px;height:32px;">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+
+					<label for=""><input type="checkbox">记住我</label>
+
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button id="loginbtn" class="btn btn-success"
+					style="margin-right:30px;">登录</button>
+				<button class="btn btn-primary" id="checkbtn">注册</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+				</div>
+				<div class="modal-body" id="showtxt">在这里添加一些文本</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+
+	<script src="js/jquery-3.2.1.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script>
+	var mb = myBrowser();
+		if ("IE" == mb) {
+		  alert("请使用非IE浏览器打开");
+		}
+		$(function() {
+			$("#vcodeimg").click(
+							function() {
+								document.getElementById('vcodeimg').src = "./../phm/admin/ValidateCodeServlet.do?"
+										+ Math.random();
+							});
+			
+
+			/* 验证提示 */
+			var vcode = "";
+			$("#vcode3").blur(function() {
+				vcode = $("#vcode3").val();
+				if (vcode.length < 5) {
+					//alert("error")
+					$('#myModal').modal('show');
+					$("#myModalLabel").html("系统提示");
+					$("#showtxt").html("验证码只能是5位");
+				}
+			});
+
+			/* 登录页面跳转到注册页面 */
+			$("#checkbtn").click(function() {
+
+				//跳转首页
+				window.location.href = "register.html";
+
+			});
+
+			$("#loginbtn").click(function() {
+			
+			
+			
+			
+			/* 用户名提示 */
+			
+				if ($("#inputusername3").val().length < 2) {
+					//alert("error")
+					$('#myModal').modal('show');
+					$("#myModalLabel").html("系统提示");
+					$("#showtxt").html("用户名只能是2-8位");
+					return false;
+				}
+		
+
+			/* 密码提示 */
+			
+				if ($("#inputPassword3").val().length < 8) {
+					//alert("error")
+					$('#myModal').modal('show');
+					$("#myModalLabel").html("系统提示");
+					$("#showtxt").html("密码只能是8-16位");
+					return false;
+				}
+			
+			
+			
+			
+			
+			
+			
+			
+				loginajax();
+			});
+
+		});
+
+		function loginajax() {
+			$.ajax({
+				type : "POST",
+				url : "./../phm/GraduationProject/login.do?username="
+						+ $("#inputusername3").val() + "&adminPwd="
+						+ $("#inputPassword3").val() + "&vcode="
+						+ $("#vcode3").val(),
+				success : function(data) {
+					if (data.error == 200) {
+						//alert("error")
+						$('#myModal').modal('show');
+						$("#myModalLabel").html("系统提示");
+						$("#showtxt").html(data.msg);
+                        //跳转首页
+                        window.location.href = "index.html?code="+ data.obj.id;
+					} else {
+                        $('#myModal').modal('show');
+                        $("#myModalLabel").html("系统提示");
+                        $("#showtxt").html(data.msg);
+					}
+				}
+			});
+		}
+		function myBrowser() {
+			var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+			var isOpera = userAgent.indexOf("Opera") > -1;
+			if (isOpera) {
+				return "Opera";
+			}
+			; //判断是否Opera浏览器
+			if (userAgent.indexOf("Firefox") > -1) {
+				return "FF";
+			} //判断是否Firefox浏览器
+			if (userAgent.indexOf("Chrome") > -1) {
+				return "Chrome";
+			}
+			if (userAgent.indexOf("Safari") > -1) {
+				return "Safari";
+			} //判断是否Safari浏览器
+			if (userAgent.indexOf("compatible") > -1
+					&& userAgent.indexOf("MSIE") > -1 && !isOpera) {
+				return "IE";
+			}
+			; //判断是否IE浏览器
+		}
+	</script>
+</body>
+</html>

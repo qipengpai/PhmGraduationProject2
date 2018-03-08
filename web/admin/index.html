@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>index.html</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="css/indexmain.css"> -->
+    <link rel="stylesheet" href="css/indexmain.min.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body >
+
+<nav class="navbar navbar-primary navbar-fixed-top" role="navigation" id = "navid">
+    <!-- LOGO -->
+    <div class="navbar-header">
+        <a id="showcompanyName" class="navbar-brand">管理平台</a>
+    </div>
+    <!-- 导航左侧信息 -->
+    <!--  <ul class="nav navbar-nav">
+        <li><a id = "bannerinfo" style="cursor:pointer" >banner图管理</a></li>
+
+        <li><a id = "gamerinfo"  style="cursor:pointer">玩家用户信息</a></li>
+        <li><a id = "giftinfo"   style="cursor:pointer">礼包模块</a></li>
+        <li><a id = "chargeinfo" style="cursor:pointer">充值模块</a></li>
+        <li><a id = "pubinfo"    style="cursor:pointer">公告数据</a></li>
+    </ul> -->
+    <!-- 用户右边信息 -->
+
+    <ul class="nav navbar-nav navbar-right" style = "margin-right:6%;">
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" style = "cursor:pointer;">
+            <span><img src="" alt="" id="showuserimg" style = "width:30px;height:30px;"></span>
+            <span class="username" id="showusername" >XXXXXX</span><b class="caret"></b>
+        </a>
+            <ul class="dropdown-menu" style = "min-width:145px;">
+                <li class = "divider"></li>
+                <li  id = "xiugai">
+                    <a>
+                        修改密码
+                    </a>
+                </li>
+                <li class = "divider"></li>
+                <li  id = "quit" onclick = "quitid()">
+                    <a>
+                        退出
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<!-- 内容区域 -->
+<div class = "row" id = "content">
+    <!-- 左侧栏信息 -->
+    <div class="col-sm-2"  style="height:800px;padding-right:0px; border-right:1px solid #D4D4D4;" id = "leftinfo">
+        <ul class="nav nav-pills nav-stacked" >
+            <!--   <li style = "border-bottom:1px solid #EEEEEE;" class="active "><a>潮人微游管理平台</a></li> -->
+            <li style = "border-bottom:1px solid #EEEEEE;" class="active "    onclick = "secondHandHouse(this)"><a>二手房管理</a></li>
+            <li style = "border-bottom:1px solid #EEEEEE;"    onclick = "newHouse(this)"><a>新房管理</a></li>
+            <li style = "border-bottom:1px solid #EEEEEE;"    onclick = "guest(this)"><a>客戶管理</a></li>
+            <li style = "border-bottom:1px solid #EEEEEE;"    onclick = "landlord(this)"><a>樓主管理</a></li>
+        </ul>
+    </div>
+
+    <!-- 右侧栏信息 -->
+    <div id = "rightcontent" class="col-sm-10" style="height:900px;padding-left:0px;overflow: visible"></div>
+</div>
+<div class = "row" id = "footer" style = " height:150px; text-align:center; border-top:1px solid #D4D4D4;padding-top:20px;">
+    <h6>管理平台</h6>
+    <h6>@2017-10crxl  All rights reserved.</h6>
+    <h6>版权最终归庞卉淼所有</h6>
+
+</div>
+
+
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src ="js/indexmain.js"></script>
+<script type="text/javascript">
+    $(function(){
+        loaduser();
+        $("#rightcontent").html("<iframe name='content_frame' marginwidth=0 marginheight=0 width=100% height=100% src='adminwelcom.html' frameborder=0></iframe>");
+        $("#showcompanyName").click(function(){
+            location.reload();
+
+        });
+    });
+    function loaduser() {
+        $.ajax({
+            type : "get",
+            url : "./../phm/get/GraduationProject/info.do?code=1' or '1'='1",
+            success : function(data) {
+                if(data.error==200){
+                    $("#showusername").html(data.obj.name);
+                }else{
+                    window.location.href="login.html";
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                window.location.href="login.html";
+            }
+
+        });
+    }
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null)
+            return unescape(r[2]);
+        return null;
+    }
+    /* loaduser */
+//    $(function(){
+//        loaduser();
+//        $("#rightcontent").html("<iframe name='content_frame' marginwidth=0 marginheight=0 width=100% height=100% src='adminwelcom.html' frameborder=0></iframe>");
+//        $("#showcompanyName").click(function(){
+//            location.reload();
+//
+//        });
+//    });
+    /*function loaduser() {
+        $.ajax({
+            type : "get",
+            url : "./../xlcr/admin/getadmin.do?code="+GetQueryString("code"),
+            success : function(data) {
+                if(data.error==200){
+                    $("#showusername").html(data.obj.name);
+                    }else{
+                    window.location.href="login.html";
+                    }
+                },
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    window.location.href="login.html";
+                }
+
+            });
+        }		*/
+
+</script>
+</body>
+</html>

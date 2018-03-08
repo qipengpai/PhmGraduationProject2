@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>kefuadd</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!-- <link rel="stylesheet" href="css/banneraddbtn.css"> -->
+    <link rel="stylesheet" href="css/banneraddbtn.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+</head>
+<body>
+
+
+<div  role="form" id = "formid" style = "width:400px;height:620px;border:2px solid #D4D4D4;padding:30px 50px;box-shadow:3px 3px 5px #D4D4D4;">
+
+    <input type = "text" id = "nameid" style = "position:absolute; display:none;">
+    <h3 class = "text-center" id = "hid">新增房东</h3>
+    <input type ="text" id = "landlordId"   style = "display:none;">
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">房东姓名：</label><br>
+            <input id="name" type="text" class="form-control customerName" placeholder="房东姓名">
+            <ul id = "ulid" class="list-group"></ul>
+        </div>
+    </div>
+    <!-- 公告标题名称-->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">性别：</label><br>
+            <select id="selectv" style = "width:296px ;height:35px">
+                <option value="1">男</option>
+                <option value="2">女</option>
+            </select>
+        </div>
+    </div>
+    <!-- 公告标题名称-->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="tags">身份证号：</label><br>
+            <input id="idCard" type="text" class="form-control customerName" placeholder="身份证号">
+            <ul id = "ulid" class="list-group"></ul>
+        </div>
+    </div>
+    <!-- 公告内容 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">年龄：</label>
+            <input id="age" type="text" class="form-control" placeholder="年龄">
+        </div>
+    </div>
+    <!-- 输入状态选择 -->
+    <div class="form-group">
+        <div class="ui-widget">
+            <label for="">联系方式：</label>
+            <input id="phone" type="text" class="form-control" placeholder="联系方式">
+        </div>
+    </div>
+
+
+    <a href = "landlord.html" class="btn btn-primary">返回</a>
+    <button type="button" class="btn btn-success pull-right" id = "phm">提交</button>
+</div>
+
+<!-- 模态框提示 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="title">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body" id = "content">在这里添加一些文本</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    $(function(){
+        $('#phm').click(function(){
+            $.ajax({
+                type : "post",
+                data:{
+                    "name":  $("#name").val(),
+                    "sex":   $("#selectv").val(),   //title
+                    "age": $("#age").val(), //内容
+                    "idCard":$("#idCard").val(),
+                    "phone": $("#phone").val(),
+                },
+                url  : "./../phm/add/LandlordInfo.do",
+                success : function(data) {
+                    /* 修改成功提示修改成功 */
+                    if(data.error==200){
+                        $('#myModal').modal('show');
+                        $('#title').html('系统提示');
+                        $('#content').html('添加成功');
+                    }else{
+                        $('#myModal').modal('show');
+                        $('#title').html('系统提示');
+                        $('#content').html('添加失败');
+                    }
+                }
+            });/* ajax结束位置 */
+        });
+    });
+
+    /*点击当前的游戏帅选操作*/
+    function gamename(obj){
+        var $gamename = $(obj).html();
+        var $gameid  = $(obj).attr('id');
+        $('#landlord').val( $gamename );
+        $('#landlordId').val($gameid);
+        $('#ulid').css('display','none');
+    }
+    $(function(){
+
+        /*跳转到新增界面后，需要调游戏类型接口*/
+//        gametypeajax();
+
+        /*当input发生改变时查询有无游戏名称*/
+        var $name = "";
+        $('#landlord').change(function(){
+            if($('#landlord').val() != ''){
+                $.ajax({
+                    type : "post",
+                    url : "./../phm/get/allLandlord.do?contident=" + $('#landlord').val(),
+                    success : function(data) {
+                        if(data.error==200){
+                            //alert(data.msg)
+                            for(var i = 0; i < data.obj.length;i++){
+                                //alert(data.obj.length);
+                                $name += "<li class='list-group-item' id = '"+data.obj[i].id+"' onclick = 'gamename(this)' style = 'height:35px;'>"+ data.obj[i].name+"</li>";
+                            }
+                            $('#ulid').append( $name );
+                            $('#ulid').css('display','block');
+                        }
+                    }
+                }) /*ajax结束位置*/
+            }
+        });
+
+        $('#submitbtn').click(function(){
+            loginajax();
+        })
+    })
+</script>
+</body>
